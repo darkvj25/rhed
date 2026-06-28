@@ -1,130 +1,109 @@
-<div class="flex w-full gap-2.5 relative">
-    <div class="flex flex-col w-full  leading-1.5 p-2 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700">
-        <div class="flex items-center mb-2 space-x-2 rtl:space-x-reverse">
-
-            @if ($user && $user->image === null)
-                <a href="{{$user->id === Auth::user()->id ? route('forum-settings'):route('user-forum-profile', ['id' => $user->id])}}">
-                    <img class="w-8 h-8 rounded-full" src="{{ asset('logo/profile.png') }}" alt="Jese image">
+<article class="bg-academic-900 border border-academic-800 rounded-3xl overflow-hidden shadow-sm active:bg-academic-800 transition-all duration-200 relative group">
+    <div class="p-5">
+        <!-- Header: Author Info & Dropdown -->
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center space-x-3">
+                <a href="{{$user->id === Auth::user()->id ? route('forum-settings'):route('user-forum-profile', ['id' => $user->id])}}" class="relative">
+                    <img class="w-10 h-10 rounded-2xl object-cover border-2 border-academic-700 shadow-sm"
+                         src="{{ $user->image ? asset('storage/' . $user->image) : asset('logo/profile.png') }}"
+                         alt="{{ $user->name }}">
+                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-academic-accent border-2 border-academic-900 rounded-full"></div>
                 </a>
+                <div>
+                    <h4 class="text-sm font-bold text-white">{{ $user->name }}</h4>
+                    <p class="text-[10px] font-medium text-emerald-500/60 uppercase tracking-tight">{{ $forumTime->diffForHumans() }}</p>
+                </div>
+            </div>
 
-            @else
+            <!-- Context Menu -->
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open" class="p-2 text-emerald-500/50 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                </button>
 
-                <a href="{{$user->id === Auth::user()->id ? route('forum-settings'):route('user-forum-profile', ['id' => $user->id])}}">
-                    <img class="w-8 h-8 rounded-full" src="{{ asset('storage/' . $user->image) }}" alt="Jese image">
-                </a>
-            @endif
-            <span class="font-semibold text-dark text-md ">{{$user->name}}</span>
-            <span class="text-sm font-normal text-dark">{{$forumTime->diffForHumans()}}</span>
+                <div x-show="open" @click.away="open = false"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     class="absolute right-0 mt-2 w-48 bg-academic-800 border border-academic-700 rounded-2xl shadow-2xl z-20 overflow-hidden">
+
+                    @if ($forum->user_id === Auth()->user()->id || Auth()->user()->role === 'admin')
+                        <a href="{{route('edit-forum',['id'=>$forum->id])}}" class="flex items-center px-4 py-3 text-sm text-white hover:bg-academic-700 transition-colors">
+                            <svg class="w-4 h-4 mr-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Edit Post
+                        </a>
+                        <button wire:click="delete({{$forum->id}})" onclick="confirm('Are you sure?') || event.stopImmediatePropagation()" class="w-full flex items-center px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            Delete
+                        </button>
+                    @endif
+                    <button data-modal-target="crud-modal{{$forum->id}}" data-modal-toggle="crud-modal{{$forum->id}}" class="w-full flex items-center px-4 py-3 text-sm text-emerald-100 hover:bg-academic-700 transition-colors">
+                        <svg class="w-4 h-4 mr-3 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Report
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="flex flex-col w-full">
+
+        <!-- Content Body -->
+        <div class="space-y-3">
             @if ($forum->image !== null)
-           <div class="flex w-full justify-center items-center">
-                <img  src="{{ asset('storage/' . $forum->image) }}" style="height: 200px; width:280px">
+            <div class="rounded-2xl overflow-hidden border border-academic-700 shadow-inner bg-academic-950">
+                <img src="{{ asset('storage/' . $forum->image) }}" class="w-full h-auto max-h-72 object-cover">
             </div>
             @endif
-            <p class="text-sm font-normal py-2.5 text-gray-900 dark:text-white">{!!$forum->post!!}</p>
-        </div>
 
-        <div class="flex justify-end">
-            <div class="flex items-center gap-3">
-
-                <button wire:click='like({{$forum->id}})' class="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class=" bi bi-heart" viewBox="0 0 16 16">
-                        <path fill="{{$isLiked ? 'red' : ''}}"  d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                    </svg>
-                    {{$forum->like->count() == 0 ? '':$forum->like->count()}}
-                </button>
-                <a href="{{route('comment',['id'=>$forum->id])}}" class="text-sm font-normal text-gray-900 underline text-dark"><span class="text-dark">{{ $forum->comments->count() == 0 ? '' : $forum->comments->count() }}</span> Comments</a>
-
+            <div class="text-emerald-50 text-sm leading-relaxed font-medium">
+                {!! $forum->post !!}
             </div>
         </div>
-    </div>
 
-    <div class="absolute right-0 top-1 ">
-        <button id="dropdownMenuIconButton{{$forum->id}}" data-dropdown-toggle="dropdownDots{{$forum->id}}" data-dropdown-placement="bottom-start" class="inline-flex items-center self-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 dark:focus:ring-gray-600" type="button">
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-               <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-            </svg>
-         </button>
-    </div>
-
-    <div  id="dropdownDots{{$forum->id}}" class="z-10 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
-        <ul class="px-1 py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
-            @if ($forum->user_id === Auth()->user()->id || Auth()->user()->role === 'admin')
-                <li class="mb-2">
-                    <a href="{{route('edit-forum',['id'=>$forum->id])}}" class="block px-4 py-2 text-center text-white bg-green-500 rounded-lg">Edit</a>
-                </li>
-            <li>
-                <button data-modal-target="popup-modal{{$forum->id}}" data-modal-toggle="popup-modal{{$forum->id}}" class="block w-full text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" type="button">
-                    Delete
+        <!-- Interaction Footer (Optimized Touch Targets) -->
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-academic-800/50">
+            <div class="flex items-center space-x-1">
+                <button wire:click='like({{$forum->id}})'
+                        class="flex items-center justify-center space-x-2 h-12 px-4 rounded-2xl {{ $isLiked ? 'bg-red-500/10 text-red-500' : 'text-emerald-500/50 hover:bg-academic-800' }} transition-all active:scale-90">
+                    <svg class="w-6 h-6" fill="{{ $isLiked ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    @if($forum->like->count() > 0)
+                        <span class="text-sm font-bold">{{ $forum->like->count() }}</span>
+                    @endif
                 </button>
-            </li>
-            @endif
-            <li>
-                <button data-modal-target="crud-modal{{$forum->id}}" data-modal-toggle="crud-modal{{$forum->id}}" class="block text-white w-full mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                    Report
-                  </button>
-            </li>
-        </ul>
+
+                <a href="{{route('comment',['id'=>$forum->id])}}"
+                   class="flex items-center justify-center space-x-2 h-12 px-4 rounded-2xl text-emerald-500/50 hover:bg-academic-800 transition-all active:scale-90">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    @if($forum->comments->count() > 0)
+                        <span class="text-sm font-bold">{{ $forum->comments->count() }}</span>
+                    @endif
+                </a>
+            </div>
+
+            <button class="w-12 h-12 flex items-center justify-center rounded-2xl text-emerald-500/50 hover:bg-academic-800 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+            </button>
+        </div>
     </div>
-    <div wire:ignore.self id="popup-modal{{$forum->id}}" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+
+    <!-- Report Modal (Integrated Flowbite) -->
+    <div wire:ignore.self id="crud-modal{{$forum->id}}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[60] justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-md max-h-full p-4">
-            <div  class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal{{$forum->id}}">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                    <span class="sr-only">Close</span>
-                </button>
-                <div class="p-4 text-center md:p-5">
-                    <svg class="w-12 h-12 mx-auto mb-4 text-gray-400 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                    </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete post?</h3>
-                    <button   wire:click="delete({{$forum->id}})" data-modal-hide="popup-modal{{$forum->id}}" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 nb-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                        Yes, I'm sure
-                    </button>
-                    <button data-modal-hide="popup-modal{{$forum->id}}" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No, cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div wire:ignore.self id="crud-modal{{$forum->id}}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-md max-h-full p-4">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Report
-                    </h3>
-                    <button type="button" class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal{{$forum->id}}">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
+            <div class="relative bg-academic-900 border border-academic-700 rounded-3xl shadow-2xl">
+                <div class="flex items-center justify-between p-5 border-b border-academic-800">
+                    <h3 class="text-xl font-bold text-white">Report Discussion</h3>
+                    <button type="button" class="text-emerald-500 hover:bg-academic-800 p-2 rounded-xl transition-colors" data-modal-toggle="crud-modal{{$forum->id}}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-                <!-- Modal body -->
-                <div  class="p-4 md:p-5 ">
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div class="col-span-2">
-                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Reason for Report</label>
-                            <textarea id="description" required wire:model='reason' rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter the reason for your report"></textarea>
-                            <div>
-                                @error('reason') <span class="error " style="color:red !important;">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
+                <div class="p-6">
+                    <label class="block mb-2 text-sm font-bold text-emerald-500">Reason for Report</label>
+                    <textarea wire:model='reason' rows="4" class="block w-full p-4 bg-academic-950 border border-academic-700 text-white rounded-2xl focus:ring-2 focus:ring-academic-accent focus:border-transparent placeholder-emerald-900" placeholder="Help us understand the issue..."></textarea>
+                    @error('reason') <p class="mt-2 text-xs font-bold text-red-500">{{ $message }}</p> @enderror
 
-                    </div>
-                    <button wire:click()="report({{$forum->id}})" class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-
-                        Report
+                    <button wire:click="report({{$forum->id}})" class="mt-6 w-full h-14 bg-academic-accent text-academic-950 font-bold rounded-2xl shadow-lg active:scale-95 transition-transform">
+                        Submit Report
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
-</div>
+</article>

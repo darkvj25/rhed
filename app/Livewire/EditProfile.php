@@ -45,69 +45,95 @@ class EditProfile extends Component implements HasForms
     {
         return $form
             ->schema([
-                Hidden::make('id'),
-                FileUpload::make('image')
-                    ->image()
-                    ->directory('profile-photos')
-                    ->preserveFilenames(),
-                TextInput::make('id_number')
-                    ->label('ID Number')
-                    ->visible(fn() => Auth::user()->role === 'student')
-                    ->disabled()
-                    ->dehydrated(),
-                TextInput::make('name')
-                    ->label('username')
-                    ->required(),
-                TextInput::make('first_name')
-                    ->label('First Name')
-                    ->visible(fn() => Auth::user()->first_name != null)
-                    ->required(),
+                \Filament\Forms\Components\Grid::make(2)
+                    ->schema([
+                        FileUpload::make('image')
+                            ->label('Profile Picture')
+                            ->image()
+                            ->avatar()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('profile-photos')
+                            ->preserveFilenames()
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'mx-auto']),
 
-                TextInput::make('last_name')
-                    ->label('Last Name')
-                    ->visible(fn() => Auth::user()->first_name != null)
-                    ->required(),
+                        Hidden::make('id'),
 
-                Select::make('course')
-                    ->options(Course::all()->pluck('course', 'id'))
-                    ->dehydrated()
-                    ->reactive()
-                    ->visible(fn() => Auth::user()->role === 'student')
-                    ->required(),
-                Select::make('year')
-                    ->options(function (callable $get) {
-                        $courseId = $get('course');
-                        if ($courseId) {
-                            return Year::where('course_id', $courseId)->pluck('year', 'id');
-                        }
-                        return [];
-                    })
-                    ->reactive()
-                    ->dehydrated()
-                    ->visible(fn() => Auth::user()->role === 'student')
-                    ->required(),
+                        TextInput::make('name')
+                            ->label('Username')
+                            ->required()
+                            ->prefixIcon('heroicon-m-user')
+                            ->columnSpan(1),
 
-                Select::make('block')
-                    ->options(function (callable $get) {
-                        $yearId = $get('year');
+                        TextInput::make('id_number')
+                            ->label('ID Number')
+                            ->visible(fn() => Auth::user()->role === 'student')
+                            ->disabled()
+                            ->dehydrated()
+                            ->prefixIcon('heroicon-m-identification')
+                            ->columnSpan(1),
 
-                        if ($yearId) {
-                           return Block::where('year_id', $yearId)->pluck('block', 'id');
-                        }
-                        return [];
-                    })
-                    ->reactive()
-                    ->visible(fn() => Auth::user()->role === 'student')
-                    ->required(),
+                        TextInput::make('first_name')
+                            ->label('First Name')
+                            ->visible(fn() => Auth::user()->first_name != null)
+                            ->required()
+                            ->columnSpan(1),
 
-                Select::make('gender')
-                    ->options([
-                        'male' => 'Male',
-                        'female' => 'Female',
+                        TextInput::make('last_name')
+                            ->label('Last Name')
+                            ->visible(fn() => Auth::user()->first_name != null)
+                            ->required()
+                            ->columnSpan(1),
+
+                        Select::make('gender')
+                            ->options([
+                                'male' => 'Male',
+                                'female' => 'Female',
+                            ])
+                            ->required()
+                            ->native(false)
+                            ->columnSpanFull(),
+
+                        \Filament\Forms\Components\Section::make('Academic Details')
+                            ->description('Your course and year information')
+                            ->visible(fn() => Auth::user()->role === 'student')
+                            ->compact()
+                            ->columns(3)
+                            ->schema([
+                                Select::make('course')
+                                    ->options(Course::all()->pluck('course', 'id'))
+                                    ->dehydrated()
+                                    ->reactive()
+                                    ->required()
+                                    ->native(false),
+
+                                Select::make('year')
+                                    ->options(function (callable $get) {
+                                        $courseId = $get('course');
+                                        if ($courseId) {
+                                            return Year::where('course_id', $courseId)->pluck('year', 'id');
+                                        }
+                                        return [];
+                                    })
+                                    ->reactive()
+                                    ->dehydrated()
+                                    ->required()
+                                    ->native(false),
+
+                                Select::make('block')
+                                    ->options(function (callable $get) {
+                                        $yearId = $get('year');
+                                        if ($yearId) {
+                                           return Block::where('year_id', $yearId)->pluck('block', 'id');
+                                        }
+                                        return [];
+                                    })
+                                    ->reactive()
+                                    ->required()
+                                    ->native(false),
+                            ]),
                     ])
-                    ->required(),
-
-                // ...
             ])
             ->statePath('data');
     }
@@ -161,6 +187,25 @@ class EditProfile extends Component implements HasForms
 
         $this->dispatch('password-updated');
     }
+
+    public function deleteUser()
+    {
+        $this->validate([
+            'password' => ['required', 'string', 'current_password'],
+        ]);
+
+        $user = Auth::user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect('/');
+    }
+
     public function render()
     {
         return view('livewire.edit-profile');

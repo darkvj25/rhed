@@ -8,15 +8,21 @@ export default {
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
-        // "./app/Filament/**/*.php",
-        // "./resources/views/filament/**/*.blade.php",
-        // "./vendor/filament/**/*.blade.php",
     ],
 
     theme: {
         extend: {
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                academic: {
+                    950: '#022c22', // Deepest Green (Background)
+                    900: '#064e3b', // Surface
+                    800: '#065f46', // Cards/Modals
+                    700: '#047857', // Borders
+                    accent: '#10b981', // Brand Green (Buttons)
+                }
             },
         },
     },

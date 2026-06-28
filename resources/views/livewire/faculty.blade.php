@@ -53,5 +53,4 @@
 
 
     </div>
-    @livewire('navigation')
 </div>

@@ -1,6 +1,5 @@
-
-<div   class="relative flex justify-center pt-1 overflow-scroll md:items-center md:justify-center ">
-    <div  class="flex flex-col w-full gap-3 px-1 md:w-1/2">
+<div class="relative flex justify-center pt-1 overflow-scroll md:items-center md:justify-center ">
+    <div class="flex flex-col w-full gap-3 px-1 md:w-1/2">
         <div class="flex justify-end px-2 mt-2">
             <button type="button" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="px-4 py-2 font-bold text-white bg-green-500 rounded-lg hover:bg-green-400">Logout</button>
         </div>
@@ -17,19 +16,17 @@
                     @else
                     <img class="w-10 h-10 rounded-full md:h-14 md:w-14" src="{{ asset('storage/' . $user->image) }}" >
                     @endif
-
                 </div>
-
                 <div>
-                    <h2 class="font-bold">{{$user->name}}</h2>
-                    <p>{{$user->email}}</p>
+                    <h2 class="font-bold text-white">{{$user->name}}</h2>
+                    <p class="text-white/60">{{$user->email}}</p>
                 </div>
             </div>
         </a>
         <div class="grid grid-flow-col grid-rows-3 ">
             <div class="flex flex-col items-center justify-center image-container">
                 <a href="{{route('student')}}" class="rounded-lg" >
-                    <img  src="logo/students.png" alt="" style=" height: 150px; width: 150px; object-fit: cover;">
+                    <img src="logo/students.png" alt="" style=" height: 150px; width: 150px; object-fit: cover;">
                 </a>
                 <h2 class="font-bold text-white">Student</h2>
             </div>
@@ -45,7 +42,6 @@
                 </a>
                 <h2 class="font-bold text-white">Courses</h2>
             </div>
-
             <div class="flex flex-col items-center justify-center image-container">
                 <a href="{{route('event')}}" class="rounded-lg ">
                     <img class="image-size" src="logo/events.png" style=" height: 150px; width: 150px; object-fit: cover;">
@@ -64,9 +60,6 @@
                 </a>
                 <h2 class="font-bold text-white">Faculty</h2>
             </div>
-
-
-
         </div>
         <div style="margin-bottom: 100px">
         </div>
@@ -93,8 +86,4 @@
             </div>
         </div>
     </div>
-
-    @livewire('navigation')
 </div>
-
-

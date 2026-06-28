@@ -34,6 +34,7 @@ class CreateForum extends Component implements HasForms
                     ->default(fn() => Auth::id()),
                 FileUpload::make('image')
                     ->image()
+                    ->disk('public')
                     ->directory('newsImage'),
                 RichEditor::make('post')
                     ->required()

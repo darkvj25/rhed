@@ -103,6 +103,5 @@
               </script>
               @endif
     </div>
-    @livewire('navigation')
 </div>
 

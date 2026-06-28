@@ -147,5 +147,4 @@
             @endif
         </div>
     </div>
-    @livewire('navigation')
 </div>

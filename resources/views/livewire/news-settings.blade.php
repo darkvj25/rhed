@@ -132,5 +132,4 @@
         </div>
 
     </div>
-    @livewire('navigation')
 </div>
