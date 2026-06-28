@@ -58,7 +58,7 @@
                     <a href="/" wire:navigate>
                         <x-application-logo class="w-24 h-24 transition-transform duration-300 hover:scale-110" />
                     </a>
-                    <h1 class="mt-4 text-2xl font-black tracking-tight text-center text-white uppercase">Veritas College of Irosin</h1>
+                    <h1 class="mt-2 text-2xl font-bold tracking-normal text-center text-white uppercase" style="font-family: 'Times New Roman', Times, serif; line-height: 1.2;">Veritas College of Irosin</h1>
                 </div>
 
                 <div class="w-full text-white">
