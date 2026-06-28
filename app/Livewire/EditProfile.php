@@ -53,9 +53,9 @@ class EditProfile extends Component implements HasForms
                     ->default($this->image),
                 TextInput::make('id_number')
                     ->label('ID Number')
-                    ->required()
                     ->visible(fn() => Auth::user()->role === 'student')
-                    ->unique(User::class, 'id_number', ignoreRecord: true),
+                    ->disabled()
+                    ->dehydrated(),
                 TextInput::make('name')
                     ->label('username')
                     ->required(),
