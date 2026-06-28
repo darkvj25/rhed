@@ -12,34 +12,21 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-        <!-- Scripts -->
+
         <style>
-/*
-            .fixed-center-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: -1;
-            }
-            .fixed-center {
-            z-index: -1;
-            } */
             input[type=text],
             input[type=email],
             input[type=password],
             select {
-               background-color: rgb(255, 255, 255) !important;
+               background-color: white !important;
                color: black !important;
+               border-radius: 0.5rem !important;
             }
 
             label,
             .fi-fo-field-wrp-label span {
                 color: white !important;
+                font-weight: 600 !important;
             }
 
             /* Aggressive error message styling */
@@ -55,34 +42,28 @@
                 opacity: 1 !important;
                 visibility: visible !important;
             }
-            h1{
+            h1 {
                 color: white !important;
             }
-            a{
+            a {
                 color: white !important;
             }
         </style>
     </head>
-    <body class="font-sans antialiased bg-green-800 "  >
+    <body class="font-sans antialiased bg-green-900">
         @livewireStyles
-        <div class="flex flex-col items-center sm:justify-center sm:pt-0" style="height: 100% !important">
-
-
-            <div class="relative w-full h-full px-6 py-4 bg-green-800 blur-background sm:max-w-md sm:rounded-lg "style="z-index:100;">
-                {{-- <div class="fixed-center-container">
-                    <div class="fixed-center">
-                        <img src="logo/logo.png" alt="" style="filter: blur(4px); z-index:-1;width:400px">
-                    </div>
-                </div> --}}
-
-                <div class="flex flex-col items-center justify-center">
+        <div class="flex flex-col items-center justify-center min-h-screen px-4 py-12 bg-center bg-no-repeat bg-cover" style="background-image: linear-gradient(rgba(20, 83, 45, 0.9), rgba(20, 83, 45, 0.9)), url('/logo/logo.png');">
+            <div class="w-full px-8 py-10 overflow-hidden shadow-2xl bg-white/10 backdrop-blur-md sm:max-w-md sm:rounded-3xl border border-white/20">
+                <div class="flex flex-col items-center justify-center mb-8">
                     <a href="/" wire:navigate>
-                        <x-application-logo class="w-20 h-20 text-gray-500 fill-current" />
+                        <x-application-logo class="w-24 h-24 transition-transform duration-300 hover:scale-110" />
                     </a>
-                    <h1 class="text-xl font-semibold">Veritas College of Irosin</h1>
+                    <h1 class="mt-4 text-2xl font-black tracking-tight text-center text-white uppercase">Veritas College of Irosin</h1>
                 </div>
 
-                {{ $slot }}
+                <div class="w-full text-white">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
         @livewireScripts

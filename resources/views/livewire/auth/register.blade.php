@@ -31,7 +31,7 @@
                 <div class="flex flex-col justify-center w-full mt-2 text-center">
                     <a href="{{route('login')}}" class="underline hover:text-green-500">Have an account?</a>
                 </div>
-            <div>
+            </div>
         </form>
         <x-filament-actions::modals/>
 

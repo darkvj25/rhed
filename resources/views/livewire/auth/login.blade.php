@@ -1,6 +1,6 @@
-<div class="h-screen">
+<div>
         <form wire:submit="create">
-            <div class="w-full p-2 md:w-full" >{{ $this->form }}
+            <div class="w-full p-2" >{{ $this->form }}
                 <div class="px-2 mt-2">
                     @error('email') <span class="text-red-500 error" >{{ $message }}</span> @enderror
                 </div>

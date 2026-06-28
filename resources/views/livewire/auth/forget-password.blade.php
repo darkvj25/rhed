@@ -1,7 +1,7 @@
-<div class="h-dvh">
+<div>
    <p class="text-white">Please enter your email address to receive a code to reset your password.</p>
    <form wire:submit.prevent="sendResetCode">
-    <div class="w-full p-2 md:w-full" >{{ $this->form }}
+    <div class="w-full p-2" >{{ $this->form }}
 
         <div class="px-2 mt-2">
             @error('password') <span class="text-red-500 error" >{{ $message }}</span> @enderror
@@ -12,7 +12,7 @@
         <div class="flex flex-col justify-center w-full mt-2 text-center">
             <a href="{{route('login')}}" class="underline hover:text-green-500">Have an account?</a>
         </div>
-    <div>
+    </div>
 </form>
 <x-filament-actions::modals />
 @if (session()->has('error'))
