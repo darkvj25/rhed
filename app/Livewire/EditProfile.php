@@ -49,8 +49,7 @@ class EditProfile extends Component implements HasForms
                 FileUpload::make('image')
                     ->image()
                     ->directory('profile-photos')
-                    ->preserveFilenames()
-                    ->default($this->image),
+                    ->preserveFilenames(),
                 TextInput::make('id_number')
                     ->label('ID Number')
                     ->visible(fn() => Auth::user()->role === 'student')

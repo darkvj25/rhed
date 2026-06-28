@@ -9,11 +9,11 @@
 
         </div>
             <h1 class="text-xl font-bold text-white">Edit Profile</h1>
-            <div class="w-full md:w-1/2">
+            <div class="w-full md:w-1/2" wire:key="edit-profile-form-wrapper">
                 <form wire:submit="update">
                     {{ $this->form }}
 
-                    <button  wire:click="$refresh" type="submit" class="mt-5 w-full text-center py-2.5 text-sm font-medium text-center text-white bg-green-700 rounded-lg ">
+                    <button type="submit" class="mt-5 w-full text-center py-2.5 text-sm font-medium text-center text-white bg-green-700 rounded-lg ">
                         Save
                     </button>
 

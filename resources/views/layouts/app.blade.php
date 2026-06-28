@@ -84,8 +84,12 @@
                 </div>
             </div> --}}
             <div class="relative">
-                @livewire('report-notification')
-                {{ $slot }}
+                <div wire:key="report-notification-container">
+                    @livewire('report-notification')
+                </div>
+                <main wire:key="main-content-container">
+                    {{ $slot }}
+                </main>
             </div>
         </div>
 
@@ -96,8 +100,8 @@
                 loader.style.display = 'none'; // Hide the loader after the page is fully loaded
             });
         </script> --}}
-        @filamentScripts
         @livewireScripts
+        @filamentScripts
         <script>
             document.addEventListener('livewire:init', () => {
                 Livewire.on('new-report-received', (data) => {
